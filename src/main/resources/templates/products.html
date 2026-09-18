@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Footwear Collection</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+    <div class="top-bar">
+        Free shipping on orders over 2,000,000 VND
+    </div>
+
+    <header class="header">
+
+        <a href="/products" class="logo">SALOMON</a>
+
+        <nav class="navigation">
+            <a href="/products">MEN</a>
+            <a href="/products">WOMEN</a>
+            <a href="/products">SPORTS</a>
+            <a href="/products">COLLECTIONS</a>
+        </nav>
+
+        <div class="header-actions">
+            <span>SEARCH</span>
+            <span>CART (0)</span>
+        </div>
+
+    </header>
+
+    <main>
+
+        <section class="hero">
+
+            <div class="hero-content">
+                <p class="hero-small">NEW COLLECTION</p>
+
+                <h1>FOR EVERY<br>ADVENTURE</h1>
+
+                <p class="hero-description">
+                    Discover footwear designed for trails,
+                    mountains and everyday exploration.
+                </p>
+
+                <a href="#collection" class="hero-button">
+                    SHOP FOOTWEAR
+                </a>
+            </div>
+
+        </section>
+
+        <section class="collection" id="collection">
+
+            <div class="collection-header">
+
+                <div>
+                    <p class="section-label">EXPLORE</p>
+                    <h2>FEATURED FOOTWEAR</h2>
+                </div>
+
+                <a href="/products" class="view-all">
+                    VIEW ALL
+                </a>
+
+            </div>
+
+            <div class="product-grid">
+
+                <article class="product-card"
+                         th:each="product : ${products}">
+
+                    <div class="product-image">
+
+                        <img th:src="${product.image}"
+                             th:alt="${product.name}">
+
+                        <span class="product-tag">
+                            NEW
+                        </span>
+
+                    </div>
+
+                    <div class="product-info">
+
+                        <p class="category"
+                           th:text="${product.category}">
+                            Category
+                        </p>
+
+                        <h3 th:text="${product.name}">
+                            Product Name
+                        </h3>
+
+                        <p class="description"
+                           th:text="${product.description}">
+                            Product description
+                        </p>
+
+                        <p class="price">
+                            <span th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}">
+                                0
+                            </span>
+                            VND
+                        </p>
+
+                        <button class="product-button">
+                            VIEW PRODUCT
+                        </button>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer>
+
+        <div class="footer-logo">
+            SALOMON
+        </div>
+
+        <p>
+            Demo Spring Boot e-commerce project
+        </p>
+
+    </footer>
+
+</body>
+</html>
