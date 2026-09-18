@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title th:text="${product.name} + ' | Salomon'">
+        Product | Salomon
+    </title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<div class="announcement">
+    FREE RETURNS WITHIN 14 DAYS
+</div>
+
+<header class="site-header">
+
+    <a th:href="@{/products}" class="logo">
+        SALOMON
+    </a>
+
+    <nav class="main-nav">
+        <a th:href="@{/products}">NEW ARRIVALS</a>
+        <a th:href="@{/products(sale=true)}">SALE</a>
+        <a th:href="@{/products(gender='Men')}">MEN</a>
+        <a th:href="@{/products(gender='Women')}">WOMEN</a>
+        <a th:href="@{/products(category='Footwear')}">FOOTWEAR</a>
+        <a th:href="@{/products(category='Accessories')}">ACCESSORIES</a>
+    </nav>
+
+    <div class="header-actions">
+        <a th:href="@{/search}">SEARCH</a>
+        <a th:href="@{/login}">ACCOUNT</a>
+        <a href="#">CART (0)</a>
+    </div>
+
+</header>
+
+
+<main class="detail-page">
+
+    <!-- BREADCRUMB -->
+    <div class="detail-breadcrumb">
+
+        <a th:href="@{/products}">
+            Home
+        </a>
+
+        <span>/</span>
+
+        <a th:href="@{/products(category=${product.category})}"
+           th:text="${product.category}">
+            Footwear
+        </a>
+
+        <span>/</span>
+
+        <span th:text="${product.name}">
+            Product
+        </span>
+
+    </div>
+
+
+    <div class="product-detail-layout">
+
+
+        <!-- ================================================= -->
+        <!-- PRODUCT IMAGE -->
+        <!-- ================================================= -->
+
+        <section class="detail-image">
+
+            <div class="detail-badges">
+
+                <span class="badge new"
+                      th:if="${product.isNew}">
+                    NEW
+                </span>
+
+                <span class="badge sale"
+                      th:if="${product.isSale}">
+                    SALE
+                </span>
+
+            </div>
+
+            <img id="main-product-image"
+                 th:src="${product.image}"
+                 th:alt="${product.name}">
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- PRODUCT INFORMATION -->
+        <!-- ================================================= -->
+
+        <section class="detail-info">
+
+            <div class="detail-brand">
+                SALOMON
+            </div>
+
+            <h1 th:text="${product.name}">
+                XT-4
+            </h1>
+
+
+            <p class="detail-type">
+
+                <span th:text="${product.subcategory}">
+                    Sportstyle
+                </span>
+
+                <span> · </span>
+
+                <span th:text="${product.gender}">
+                    Unisex
+                </span>
+
+            </p>
+
+
+            <!-- ================================================= -->
+            <!-- PRICE -->
+            <!-- ================================================= -->
+
+            <div class="detail-price">
+
+                <span class="current-price"
+                      th:classappend="${product.isSale} ? ' sale-price' : ''"
+                      th:text="${#numbers.formatDecimal(
+                          product.price,
+                          0,
+                          'COMMA',
+                          0,
+                          'POINT'
+                      )} + ' VND'">
+                    4,990,000 VND
+                </span>
+
+
+                <span class="old-price"
+                      th:if="${product.oldPrice != null}"
+                      th:text="${#numbers.formatDecimal(
+                          product.oldPrice,
+                          0,
+                          'COMMA',
+                          0,
+                          'POINT'
+                      )} + ' VND'">
+                    6,799,000 VND
+                </span>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- COLOR -->
+            <!-- ================================================= -->
+
+            <div class="color-section"
+                 th:if="${!#lists.isEmpty(variants)}">
+
+                <div class="color-heading">
+
+                    <strong>COLOR:</strong>
+
+                    <span id="selected-color-name"
+                          th:text="${variants[0]['color_name']}">
+                        Vanilla
+                    </span>
+
+                </div>
+
+
+                <div class="color-options">
+
+                    <button type="button"
+                            class="color-option"
+                            th:each="variant, status : ${variants}"
+
+                            th:classappend="${status.first} ? ' selected' : ''"
+
+                            th:attr="
+                                data-variant-id=${variant['id']},
+                                data-color-name=${variant['color_name']},
+                                data-image=${variant['image']}
+                            "
+
+                            th:title="${variant['color_name']}">
+
+                        <span class="color-circle"
+                              th:style="'background-color:' + ${variant['color_code']}">
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- SIZE -->
+            <!-- ================================================= -->
+
+            <div class="size-section"
+                 th:if="${!#lists.isEmpty(sizes)}">
+
+                <div class="size-heading">
+
+                    <strong>SELECT SIZE</strong>
+
+                    <span th:if="${product.category == 'Footwear'}">
+                        EU
+                    </span>
+
+                </div>
+
+
+                <div class="size-grid">
+
+                    <button type="button"
+                            class="size-button"
+
+                            th:each="item : ${sizes}"
+
+                            th:text="${item['size']}"
+
+                            th:attr="
+                                data-variant-id=${item['variant_id']},
+                                data-stock=${item['stock']}
+                            "
+
+                            th:disabled="${item['stock'] == 0}">
+
+                        40
+
+                    </button>
+
+                </div>
+
+
+                <div id="stock-message"
+                     class="stock-message">
+                </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- ADD TO CART -->
+            <!-- ================================================= -->
+
+            <button id="add-to-cart"
+                    class="add-cart-button"
+                    type="button"
+                    disabled>
+
+                SELECT A SIZE
+
+            </button>
+
+
+            <!-- ================================================= -->
+            <!-- PRODUCT DETAILS -->
+            <!-- ================================================= -->
+
+            <div class="detail-description">
+
+                <h3>PRODUCT DETAILS</h3>
+
+                <p th:text="${product.description}">
+                    Product description.
+                </p>
+
+
+                <div class="detail-meta">
+
+                    <p>
+                        <strong>Category:</strong>
+
+                        <span th:text="${product.category}">
+                        </span>
+                    </p>
+
+
+                    <p>
+                        <strong>Collection:</strong>
+
+                        <span th:text="${product.collection}">
+                        </span>
+                    </p>
+
+
+                    <p>
+                        <strong>Gender:</strong>
+
+                        <span th:text="${product.gender}">
+                        </span>
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<!-- ================================================= -->
+<!-- JAVASCRIPT -->
+<!-- ================================================= -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const colorButtons =
+        document.querySelectorAll(".color-option");
+
+    const sizeButtons =
+        document.querySelectorAll(".size-button");
+
+    const mainImage =
+        document.getElementById("main-product-image");
+
+    const colorName =
+        document.getElementById("selected-color-name");
+
+    const addCartButton =
+        document.getElementById("add-to-cart");
+
+    const stockMessage =
+        document.getElementById("stock-message");
+
+
+    let selectedVariantId = null;
+    let selectedSize = null;
+
+
+    // =====================================================
+    // SHOW SIZES FOR SELECTED COLOR
+    // =====================================================
+
+    function showSizesForVariant(variantId) {
+
+        selectedVariantId = String(variantId);
+        selectedSize = null;
+
+        sizeButtons.forEach(function (button) {
+
+            const buttonVariantId =
+                String(button.dataset.variantId);
+
+            button.classList.remove("selected");
+
+
+            if (buttonVariantId === selectedVariantId) {
+
+                button.style.display = "";
+
+            } else {
+
+                button.style.display = "none";
+
+            }
+
+        });
+
+
+        if (addCartButton) {
+
+            addCartButton.disabled = true;
+            addCartButton.textContent = "SELECT A SIZE";
+
+        }
+
+
+        if (stockMessage) {
+
+            stockMessage.textContent = "";
+
+        }
+
+    }
+
+
+    // =====================================================
+    // SELECT COLOR
+    // =====================================================
+
+    colorButtons.forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            colorButtons.forEach(function (item) {
+
+                item.classList.remove("selected");
+
+            });
+
+
+            this.classList.add("selected");
+
+
+            const variantId =
+                this.dataset.variantId;
+
+            const image =
+                this.dataset.image;
+
+            const name =
+                this.dataset.colorName;
+
+
+            if (mainImage && image) {
+
+                mainImage.src = image;
+
+            }
+
+
+            if (colorName) {
+
+                colorName.textContent = name;
+
+            }
+
+
+            showSizesForVariant(variantId);
+
+        });
+
+    });
+
+
+    // =====================================================
+    // SELECT SIZE
+    // =====================================================
+
+    sizeButtons.forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            if (this.disabled) {
+                return;
+            }
+
+
+            sizeButtons.forEach(function (item) {
+
+                item.classList.remove("selected");
+
+            });
+
+
+            this.classList.add("selected");
+
+
+            selectedSize =
+                this.textContent.trim();
+
+
+            const stock =
+                Number(this.dataset.stock);
+
+
+            if (stockMessage) {
+
+                stockMessage.textContent =
+                    stock + " IN STOCK";
+
+            }
+
+
+            if (addCartButton) {
+
+                addCartButton.disabled = false;
+
+                addCartButton.textContent =
+                    "ADD TO CART";
+
+            }
+
+        });
+
+    });
+
+
+    // =====================================================
+    // INITIAL VARIANT
+    // =====================================================
+
+    const firstColor =
+        document.querySelector(".color-option");
+
+
+    if (firstColor) {
+
+        showSizesForVariant(
+            firstColor.dataset.variantId
+        );
+
+    }
+
+
+    // =====================================================
+    // ADD TO CART DEMO
+    // =====================================================
+
+    if (addCartButton) {
+
+        addCartButton.addEventListener(
+            "click",
+            function () {
+
+                if (!selectedVariantId ||
+                    !selectedSize) {
+
+                    return;
+
+                }
+
+
+                alert(
+                    "Added to cart\n" +
+                    "Size: " + selectedSize
+                );
+
+            }
+        );
+
+    }
+
+});
+
+</script>
+
+
+</body>
+</html>

@@ -4,136 +4,316 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Footwear Collection</title>
-
+    <title>Products | Salomon</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
 <body>
 
-    <div class="top-bar">
-        Free shipping on orders over 2,000,000 VND
-    </div>
+<div class="announcement">
+    FREE RETURNS WITHIN 14 DAYS
+</div>
 
-    <header class="header">
+<header class="site-header">
 
-        <a href="/products" class="logo">SALOMON</a>
+    <div class="header-main">
 
-        <nav class="navigation">
-            <a href="/products">MEN</a>
-            <a href="/products">WOMEN</a>
-            <a href="/products">SPORTS</a>
-            <a href="/products">COLLECTIONS</a>
+        <a class="logo" th:href="@{/products}">
+            SALOMON
+        </a>
+
+        <nav class="main-nav">
+
+            <a th:href="@{/products}">NEW ARRIVALS</a>
+
+            <a class="sale-link"
+               th:href="@{/products(sale=true)}">
+                SALE
+            </a>
+
+            <a th:href="@{/products(gender='Men')}">
+                MEN
+            </a>
+
+            <a th:href="@{/products(gender='Women')}">
+                WOMEN
+            </a>
+
+            <div class="nav-dropdown">
+
+                <a th:href="@{/products(category='Footwear')}">
+                    FOOTWEAR
+                </a>
+
+                <div class="dropdown-menu">
+                    <a th:href="@{/products(category='Footwear')}">
+                        All Footwear
+                    </a>
+                    <a href="#">Sportstyle</a>
+                    <a href="#">Trail Running</a>
+                    <a href="#">Hiking</a>
+                </div>
+
+            </div>
+
+            <div class="nav-dropdown">
+
+                <a th:href="@{/products(category='Accessories')}">
+                    ACCESSORIES
+                </a>
+
+                <div class="dropdown-menu">
+                    <a th:href="@{/products(category='Hydration')}">
+                        Hydration Vests
+                    </a>
+                    <a th:href="@{/products(category='Bags')}">
+                        Backpacks
+                    </a>
+                    <a th:href="@{/products(category='Accessories')}">
+                        Caps & Accessories
+                    </a>
+                </div>
+
+            </div>
+
+            <a href="#">SPORTS</a>
+            <a href="#">EXPLORE</a>
+
         </nav>
 
         <div class="header-actions">
-            <span>SEARCH</span>
-            <span>CART (0)</span>
+            <button>SEARCH</button>
+            <button>ACCOUNT</button>
+            <button>CART (0)</button>
         </div>
 
-    </header>
+    </div>
 
-    <main>
+</header>
 
-        <section class="hero">
 
-            <div class="hero-content">
-                <p class="hero-small">NEW COLLECTION</p>
+<main>
 
-                <h1>FOR EVERY<br>ADVENTURE</h1>
+    <div class="breadcrumb">
+        <a th:href="@{/products}">Home</a>
+        <span>/</span>
+        <span>Products</span>
+    </div>
 
-                <p class="hero-description">
-                    Discover footwear designed for trails,
-                    mountains and everyday exploration.
-                </p>
 
-                <a href="#collection" class="hero-button">
-                    SHOP FOOTWEAR
-                </a>
+    <section class="catalog">
+
+        <div class="catalog-heading">
+
+            <div>
+                <p class="eyebrow">EXPLORE THE COLLECTION</p>
+
+                <h1 th:if="${selectedCategory == null}">
+                    ALL PRODUCTS
+                </h1>
+
+                <h1 th:if="${selectedCategory != null}"
+                    th:text="${#strings.toUpperCase(selectedCategory)}">
+                    PRODUCTS
+                </h1>
             </div>
 
-        </section>
 
-        <section class="collection" id="collection">
+            <div class="sort-area">
 
-            <div class="collection-header">
+                <span>SORT BY:</span>
 
-                <div>
-                    <p class="section-label">EXPLORE</p>
-                    <h2>FEATURED FOOTWEAR</h2>
-                </div>
+                <select id="sortSelect"
+                        onchange="changeSort(this.value)">
 
-                <a href="/products" class="view-all">
-                    VIEW ALL
-                </a>
+                    <option value="featured"
+                            th:selected="${selectedSort == 'featured'}">
+                        Featured
+                    </option>
+
+                    <option value="name-asc"
+                            th:selected="${selectedSort == 'name-asc'}">
+                        Name A-Z
+                    </option>
+
+                    <option value="price-asc"
+                            th:selected="${selectedSort == 'price-asc'}">
+                        Price: Low to High
+                    </option>
+
+                    <option value="price-desc"
+                            th:selected="${selectedSort == 'price-desc'}">
+                        Price: High to Low
+                    </option>
+
+                </select>
 
             </div>
 
-            <div class="product-grid">
+        </div>
 
-                <article class="product-card"
-                         th:each="product : ${products}">
+
+        <div class="category-bar">
+
+            <a th:href="@{/products}"
+               th:classappend="${selectedCategory == null} ? 'active'">
+                ALL
+            </a>
+
+            <a th:href="@{/products(category='Footwear')}"
+               th:classappend="${selectedCategory == 'Footwear'} ? 'active'">
+                FOOTWEAR
+            </a>
+
+            <a th:href="@{/products(category='Hydration')}"
+               th:classappend="${selectedCategory == 'Hydration'} ? 'active'">
+                HYDRATION
+            </a>
+
+            <a th:href="@{/products(category='Bags')}"
+               th:classappend="${selectedCategory == 'Bags'} ? 'active'">
+                BAGS
+            </a>
+
+            <a th:href="@{/products(category='Apparel')}"
+               th:classappend="${selectedCategory == 'Apparel'} ? 'active'">
+                APPAREL
+            </a>
+
+            <a th:href="@{/products(category='Accessories')}"
+               th:classappend="${selectedCategory == 'Accessories'} ? 'active'">
+                ACCESSORIES
+            </a>
+
+        </div>
+
+
+        <div class="result-info">
+
+            <span th:text="${products.size()} + ' PRODUCTS'">
+                0 PRODUCTS
+            </span>
+
+        </div>
+
+
+        <div class="product-grid">
+
+            <article class="product-card"
+                     th:each="product : ${products}">
+
+                <a class="product-link" th:href="@{/products/{id}(id=${product.id})}">
 
                     <div class="product-image">
 
                         <img th:src="${product.image}"
                              th:alt="${product.name}">
 
-                        <span class="product-tag">
-                            NEW
-                        </span>
+                        <div class="badges">
 
-                    </div>
-
-                    <div class="product-info">
-
-                        <p class="category"
-                           th:text="${product.category}">
-                            Category
-                        </p>
-
-                        <h3 th:text="${product.name}">
-                            Product Name
-                        </h3>
-
-                        <p class="description"
-                           th:text="${product.description}">
-                            Product description
-                        </p>
-
-                        <p class="price">
-                            <span th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}">
-                                0
+                            <span class="badge new"
+                                  th:if="${product.isNew}">
+                                NEW
                             </span>
-                            VND
-                        </p>
 
-                        <button class="product-button">
-                            VIEW PRODUCT
-                        </button>
+                            <span class="badge sale"
+                                  th:if="${product.isSale}">
+                                SALE
+                            </span>
+
+                        </div>
 
                     </div>
 
-                </article>
 
-            </div>
+                    <div class="product-information">
 
-        </section>
+                        <p class="brand">
+                            SALOMON
+                        </p>
 
-    </main>
+                        <h2 th:text="${product.name}">
+                            Product Name
+                        </h2>
 
-    <footer>
+                        <p class="product-type">
 
-        <div class="footer-logo">
-            SALOMON
+                            <span th:text="${product.subcategory}">
+                                Category
+                            </span>
+
+                            <span> · </span>
+
+                            <span th:text="${product.gender}">
+                                Unisex
+                            </span>
+
+                        </p>
+
+
+                        <div class="prices">
+
+                            <span class="current-price"
+                                  th:classappend="${product.isSale} ? 'sale-price'"
+                                  th:text="${#numbers.formatDecimal(product.price,0,'COMMA',0,'POINT')} + ' VND'">
+                                0 VND
+                            </span>
+
+                            <span class="old-price"
+                                  th:if="${product.oldPrice != null}"
+                                  th:text="${#numbers.formatDecimal(product.oldPrice,0,'COMMA',0,'POINT')} + ' VND'">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+            </article>
+
         </div>
 
-        <p>
-            Demo Spring Boot e-commerce project
-        </p>
+    </section>
 
-    </footer>
+</main>
+
+
+<footer>
+
+    <div class="footer-brand">
+        SALOMON
+    </div>
+
+    <div>
+        <p>SPORTS</p>
+        <p>TRAIL RUNNING</p>
+        <p>HIKING</p>
+    </div>
+
+    <div>
+        <p>FOOTWEAR</p>
+        <p>APPAREL</p>
+        <p>ACCESSORIES</p>
+    </div>
+
+    <div>
+        <p>SPRING BOOT E-COMMERCE DEMO</p>
+    </div>
+
+</footer>
+
+
+<script>
+function changeSort(sort) {
+
+    const url = new URL(window.location.href);
+
+    url.searchParams.set("sort", sort);
+
+    window.location.href = url.toString();
+}
+</script>
 
 </body>
 </html>
